@@ -26,13 +26,13 @@ const createToken = (user) =>
     {
       email: user.email,
     },
-    process.env.JWT_SECRET,
+    "secret",
     { expiresIn: "7d" }
   );
 
 const verifyToken = (req, res, next) => {
   const authToken = req.headers.authorization.split(" ")[1];
-  const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+  const decoded = jwt.verify(authToken, "secret");
   if (!decoded.email) {
     return res.send({ message: "Access Denied!" });
   }
