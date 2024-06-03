@@ -2,15 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+require("dotenv").config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
-const uri =
-  "mongodb+srv://hachinrayhan:W70P1juoyo7kYDX0@cluster0.ieahvtz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.ieahvtz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -26,13 +26,13 @@ const createToken = (user) =>
     {
       email: user.email,
     },
-    "secret",
+    process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
 
 const verifyToken = (req, res, next) => {
   const authToken = req.headers.authorization.split(" ")[1];
-  const decoded = jwt.verify(authToken, "secret");
+  const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
   if (!decoded.email) {
     return res.send({ message: "Access Denied!" });
   }
@@ -136,6 +136,3 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
 });
-
-// W70P1juoyo7kYDX0
-// hachinrayhan
